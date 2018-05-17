@@ -14,7 +14,7 @@
       pointer-events: none;
     }
 
-    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
       display: none !important;
     }
 
@@ -28,6 +28,12 @@
 
     .mdl-layout__header-row {
       padding-left: 40px;
+    }
+
+    @media (max-width: 1024px) {
+      .mdl-layout__header-row {
+        padding-left: 16px;
+      }
     }
 
     .padding {
@@ -66,8 +72,73 @@
       top: 30px;
     }
 
+    .mdl-layout-title {
+      display: none;
+    }
+
+    .mdl-layout-spacer {
+      display: none;
+    }
+
     .ko-fi {
       display: none;
+    }
+
+    .filter {
+      flex-grow: 1;
+      margin-right: 15px;
+      position: relative;
+    }
+
+    .filter input {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      border: none;
+      box-sizing: border-box;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      line-height: 34px;
+      /*margin-top: -1px;*/
+      padding-left: 35px;
+      padding-right: 35px;
+      width: 100%;
+    }
+
+    .filter input:active,
+    .filter input:focus {
+      outline: none;
+      color: rgba(255, 255, 255, 1);
+    }
+
+    .search-icon {
+      color: rgba(255, 255, 255, 0.7);
+      display: block;
+      position: absolute;
+      left: 7px;
+      top: 50%;
+      margin-top: -9px;
+      font-size: 20px;
+      transition: color 0.2s linear;
+    }
+
+    .filter-clear {
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);;
+      display: block;
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      margin-top: -9px;
+      font-size: 20px;
+      transition: color 0.2s linear;
+    }
+
+    .filter input:focus + .search-icon {
+      color: #fff;
+    }
+
+    .filter input:focus + .search-icon + .filter-clear {
+      color: #fff;
     }
 
     @media (min-width: 768px) {
@@ -75,18 +146,72 @@
         margin-right: 15px;
         display: block;
       }
+
+      .mdl-layout-title {
+        display: block;
+      }
+
+      .mdl-layout-spacer {
+        display: block;
+      }
+
+      .filter {
+        flex-grow: 0;
+      }
     }
+
+    .backdrop {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mdl-card {
+      width: 320px;
+      overflow: visible;
+    }
+
+    .mdl-card > .mdl-card__actions {
+      display: flex;
+      box-sizing:border-box;
+      align-items: center;
+    }
+
+    .snapshot {
+      border: none;
+      width: 320px;
+      height: 240px;
+    }
+
+    .record {
+      color: rgb(255,82,82);
+    }
+
+    .record {
+      color: rgb(255,82,82);
+    }
+
   </style>
 </head>
 <body ng-controller="AppController as vm">
   <div class="spinner" ng-hide="vm.ready">
     <div class="mdl-spinner mdl-js-spinner is-active"></div>
   </div>
+
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
         <span class="mdl-layout-title">MyFreeCams Recorder</span>
         <div class="mdl-layout-spacer"></div>
+        <div class="filter">
+          <input type="text" class="search" ng-model="vm.keyword" ng-model-options="{ debounce: 500 }">
+          <i class="material-icons search-icon">search</i>
+          <i class="material-icons filter-clear" ng-hide="!vm.filter.keywords" ng-click="vm.clearFilter()">clear</i>
+        </div>
         <a class="ko-fi" href='https://ko-fi.com/A320FTJ' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi4.png?v=f' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
         <nav class="mdl-navigation">
           <button class="refresh mdl-button mdl-js-button mdl-button--fab mdl-button--colored mdl-shadow--4dp" ng-click="vm.refresh()" title="reload">
@@ -101,42 +226,30 @@
         <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
           <thead>
             <tr>
-              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('nm')" ng-class="vm.sortType == 'nm' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">Name</th>
-              <th ng-click="vm.sort('age')" ng-class="vm.sortType == 'age' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">Age</th>
-              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('vs')" ng-class="vm.sortType == 'vs' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">State</th>
-              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('city')" ng-class="vm.sortType == 'city' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">City</th>
-              <th ng-click="vm.sort('camscore')" ng-class="vm.sortType == 'camscore' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">Score</th>
-              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('country')" ng-class="vm.sortType == 'country' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">Contry</th>
-              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('missmfc')" ng-class="vm.sortType == 'missmfc' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">Miss MFC</th>
-              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('new_model')" ng-class="vm.sortType == 'new_model' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">New</th>
-              <th ng-click="vm.sort('rc')" ng-class="vm.sortType == 'rc' ? ('mdl-data-table__header--sorted-' + (vm.sortReverse ? 'ascending' : 'descending') ) : ''">Viewers</th>
-              <th></th>
+              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('nm')" ng-class="vm.getSortClass('nm')">Name</th>
+              <th ng-click="vm.sort('age')" ng-class="vm.getSortClass('age')">Age</th>
+              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('vs')" ng-class="vm.getSortClass('vs')">State</th>
+              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('city')" ng-class="vm.getSortClass('city')">City</th>
+              <th ng-click="vm.sort('camscore')" ng-class="vm.getSortClass('camscore')">Score</th>
+              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('country')" ng-class="vm.getSortClass('country')">Country</th>
+              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('missmfc')" ng-class="vm.getSortClass('missmfc')">Miss MFC</th>
+              <th class="mdl-data-table__cell--non-numeric" ng-click="vm.sort('new_model')" ng-class="vm.getSortClass('new_model')">New</th>
+              <th ng-click="vm.sort('rc')" ng-class="vm.getSortClass('rc')">Viewers</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="model in vm.models | orderBy:vm.sortType:vm.sortReverse" ng-class="model.color">
+            <tr ng-repeat="model in vm.models" ng-class="model.color">
               <td class="mdl-data-table__cell--non-numeric">
-                <a class="mdl-color-text--blue-800" target="_blank" ng-href="https://www.myfreecams.com/#{{ model.nm }}" ng-click="vm.log(model)" ng-bind="::model.nm"></a>
+                <a class="mdl-color-text--blue-800" target="_blank" ng-click="vm.viewModel(model)" ng-bind="::model.nm"></a>
               </td>
               <td ng-bind="::model.age"></td>
-              <td class="mdl-data-table__cell--non-numeric" ng-bind="::model.state"></td>
+              <td class="mdl-data-table__cell--non-numeric" ng-bind="model.state"></td>
               <td class="mdl-data-table__cell--non-numeric" ng-bind="::model.city"></td>
               <td ng-bind="::model.camscore"></td>
               <td class="mdl-data-table__cell--non-numeric" ng-bind="::model.country"></td>
               <td class="mdl-data-table__cell--non-numeric"><i class="material-icons mdi-24 mdl-color-text--amber-500" ng-bind="::model.missmfc"></i></td>
               <td class="mdl-data-table__cell--non-numeric"><i class="material-icons mdi-24 mdl-color-text--orange-500" ng-bind="::model.new_model"></i></td>
               <td ng-bind="::model.rc"></td>
-              <td>
-                <button id="{{ 'action-list-' + model.uid }}" class="mdl-button mdl-js-button mdl-button--icon">
-                  <i class="material-icons">more_vert</i>
-                </button>
-                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="{{ 'action-list-' + model.uid }}">
-                  <li class="mdl-menu__item" ng-click="vm.includeUid(model)" ng-disabled="model.incDisabled">Include</li>
-                  <li class="mdl-menu__item mdl-menu__item--full-bleed-divider" ng-click="vm.excludeUid(model)" ng-disabled="model.excDisabled">Exclude</li>
-                  <li class="mdl-menu__item" ng-click="vm.deleteUid(model)" ng-disabled="model.delDisabled">Delete</li>
-                  <!-- <li class="mdl-menu__item" ng-click="vm.dump(model)" ng-disabled="model.delDisabled">Dump</li> -->
-                </ul>
-              </td>
             </tr>
           </tbody>
         </table>
@@ -145,46 +258,128 @@
     </main>
   </div>
 
+  <div class="backdrop ng-hide" ng-hide="!vm.model" ng-click="vm.viewModel(null)">
+    <div class="mdl-card mdl-shadow--8dp" onclick="stopPropogate(event)">
+      <img class="snapshot" ng-src="{{ vm.snapshot }}" alt=""/>
+      <div class="mdl-card__supporting-text">
+        <h2 class="mdl-card__title-text">{{ vm.model.nm }}</h2>
+        <table>
+          <tr><td style="width:120px">Age</td><td>{{ vm.model.age || '-' }}</td></tr>
+          <tr><td>State</td><td>{{ vm.model.state }}</td></tr>
+          <tr><td>City</td><td>{{ vm.model.city || '-' }}</td></tr>
+          <tr><td>Country</td><td>{{ vm.model.country || '-' }}</td></tr>
+          <tr><td>Camscore</td><td>{{ vm.model.camscore }}</td></tr>
+          <tr><td>Miss MFC</td><td>{{ vm.model.missmfc ? 'Yes' : 'No' }}</td></tr>
+          <tr><td>New model</td><td>{{ vm.model.new_model ? 'Yes' : 'No' }}</td></tr>
+          <tr><td>Viewers</td><td>{{ vm.model.rc }}</td></tr>
+        </table>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <a id="prev" class="mdl-button mdl-js-button mdl-button--icon" ng-click="vm.prev()"><i class="material-icons">chevron_left</i></a>
+        <a id="inc" class="mdl-button mdl-js-button mdl-button--icon record" ng-click="vm.includeUid(vm.model, 0)" ng-disabled="vm.model.incDisabled"><i class="material-icons">fiber_manual_record</i></a>
+        <a id="exp" class="mdl-button mdl-js-button mdl-button--icon record" ng-click="vm.includeUid(vm.model, 24)" ng-disabled="vm.model.incDisabled"><i class="material-icons">timelapse</i></a>
+        <a id="exc" class="mdl-button mdl-js-button mdl-button--icon" ng-click="vm.excludeUid(vm.model)" ng-disabled="vm.model.excDisabled"><i class="material-icons">stop</i></a>
+        <a id="del" class="mdl-button mdl-js-button mdl-button--icon" ng-click="vm.deleteUid(vm.model)" ng-disabled="vm.model.delDisabled"><i class="material-icons">delete</i></a>
+        <a id="next" class="mdl-button mdl-js-button mdl-button--icon" ng-click="vm.next()"><i class="material-icons">chevron_right</i></a>
+        <div class="mdl-layout-spacer"></div>
+        <a id="goto" target="_blank" ng-href="https://www.myfreecams.com/#{{ vm.model.nm }}" class="mdl-button mdl-button--icon">
+          <i class="material-icons">open_in_new</i>
+        </a>
+
+        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="prev">Previous model</div>
+        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="inc">Include to the list of models you want to record</div>
+        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="exp">Record only within next 24 hours</div>
+        <!-- <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="exp">Include to the list of models you want to record and keep it there only for the next 24 hours</div> -->
+        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="exc">Exclude from the list of models you want to record</div>
+        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="del">Delete</div>
+        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="next">Next model</div>
+        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="goto">Go to myfreecams.com</div>
+      </div>
+    </div>
+  </div>
+
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  <script src="https://code.angularjs.org/1.5.11/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 
   <script>
+    function stopPropogate(event) {
+      event.stopPropagation();
+    }
+
     var app = angular.module('app', []);
 
-    app.controller('AppController', ['$timeout', '$http', function ($timeout, $http) {
+    app.controller('AppController', ['$timeout', '$http', '$scope', '$filter', function ($timeout, $http, $scope, $filter) {
       var vm = this;
 
+      vm.serverModels = [];
       vm.models = [];
-
-      vm.sortType = 'nm';
-      vm.sortReverse = false;
-
-      vm.log = function (model) {
-        console.log('http://video' + (model.camserv - 500) + '.myfreecams.com:1935/NxServer/ngrp:mfc_' + (100000000 + model.uid) + '.f4v_mobile/playlist.m3u8?nc=' + Date.now());
+      vm.ngvideo_servers = {
+        "1545":"545",
+        "1546":"546",
+        "1547":"547",
+        "1548":"548",
+        "1549":"549",
+        "1550":"550",
+        "1551":"551",
+        "1552":"552",
+        "1553":"553",
+        "1554":"554"
       };
 
-      vm.sort = function (sortType) {
-        if (vm.sortType === sortType) {
+      vm.model = null;
+
+      vm.keyword = null;
+      vm.filter = {};
+      vm.sortFields = ['nm'];
+      vm.sortReverse = false;
+
+      $scope.$watch(function () { return vm.keyword }, function (newVal, oldVal) {
+        vm.filter = !newVal ? {} : { keywords: newVal };
+
+        vm.filterAndSort();
+      }, true);
+
+      vm.clearFilter = function () {
+        vm.keyword = '';
+        vm.filter = {};
+
+        vm.filterAndSort();
+      };
+
+      vm.sort = function (field) {
+        if (vm.sortFields[0] === field) {
           vm.sortReverse = !vm.sortReverse;
         } else {
-          vm.sortType = sortType;
+          vm.sortFields = [field, vm.sortFields[0]];
         }
+
+        vm.filterAndSort();
+      };
+
+      vm.filterAndSort = function (ready) {
+        vm.models = $filter('orderBy')($filter('filter')(vm.serverModels, vm.filter), vm.sortFields, vm.sortReverse);
+
+        $timeout(function () {
+          componentHandler.upgradeAllRegistered();
+
+          vm.ready = vm.ready || ready;
+        });
       };
 
       vm.setVs = function (model) {
         var state = {
-          vs9996: 'Capturing',  // 10000 + -4 = 9996
-          vs9997: 'To Include', // 10000 + -3 = 9997
-          vs9998: 'To Exclude', // 10000 + -2 = 9998
-          vs9999: 'To Delete',  // 10000 + -1 = 9999
-          vs10000: 'Online',
-          vs10002: 'Away',
-          vs10012: 'In Private',
-          vs10013: 'In Group Show',
-          vs10090: 'Online',
-          vs10091: 'In Private',
-          vs10127: 'Offline'
+          '-4': 'Capturing',
+          '-3': 'To Include',
+          '-2': 'To Exclude',
+          '-1': 'To Delete',
+          '0': 'Online',
+          '2': 'Away',
+          '12': 'In Private',
+          '13': 'In Group Show',
+          '90': 'Online',
+          '91': 'In Private',
+          '127': 'Offline'
         };
 
         // set our own virtual value for vs field
@@ -192,64 +387,104 @@
           model.vs = -1; // to delete
         } else if (model.nextMode === 0) {
           model.vs = -2; // to exclude
-        } else if (model.nextMode === 1) {
+        } else if (model.nextMode >= 1) {
           model.vs = -3; // to include
         } else if (model.capturing) {
           model.vs = -4; // capturing
         }
 
-        model.state = state['vs' + (10000 + model.vs)] || 'Unknown';
+        model.state = state[model.vs] || 'Unknown';
 
-        if (model.vs === -4) {
-          model.color = 'mdl-color-text--green-400 mdl-color--green-50';
-        } else if (model.vs === -3) {
-          model.color = 'mdl-color-text--blue-300 mdl-color--blue-50';
-        } else if (model.vs === -1) {
+        // "mark" the model if she has "expiration time"
+        if (model.mode > 1 || model.nextMode > 1) {
+          model.state += '*';
+        }
+
+        if (model.vs === -1) {
           model.color = 'mdl-color-text--red-300 mdl-color--red-50';
         } else if (model.vs === -2 || model.vs > 0) {
           model.color = 'mdl-color-text--grey-400 mdl-color--grey-100';
+        } else if (model.vs === -3) {
+          model.color = 'mdl-color-text--blue-300 mdl-color--blue-50';
+        } else if (model.vs === -4) {
+          model.color = 'mdl-color-text--green-400 mdl-color--green-50';
         } else {
           model.color = '';
         }
 
-        model.incDisabled = model.vs === -4 || model.vs === -3;
-        model.excDisabled = model.vs !== -4 && model.vs !== -3;
-        model.delDisabled = model.vs === -1;
+        model.incDisabled = model.nextMode >= 1 || (model.nextMode == void(0) && model.mode >= 1);
+        model.excDisabled = model.nextMode == 0 || (model.nextMode == void(0) && (model.mode == void(0) || model.mode == 0));
+        model.delDisabled = model.nextMode == -1;
       };
 
-      vm.includeUid = function (model) {
-        $http.get('/models/include', { params: { uid: model.uid } }).then(function (response) {
-          model.nextMode = 1;
+      vm.getSortClass = function (field) {
+        return (vm.sortFields[0] === field)
+          ? (vm.sortReverse ? 'mdl-data-table__header--sorted-ascending' : 'mdl-data-table__header--sorted-descending')
+          : '';
+      };
+
+      vm.includeUid = function (model, expireAfter) {
+        $http.get('/models/include', { params: { uid: model.uid, expire_after: expireAfter } }).then(function (response) {
+          model.nextMode = response.data.mode;
           vm.setVs(model);
         });
       };
 
       vm.excludeUid = function (model) {
         $http.get('/models/exclude', { params: { uid: model.uid } }).then(function (response) {
-          model.nextMode = 0;
+          model.nextMode = response.data.mode;
           vm.setVs(model);
         });
       };
 
       vm.deleteUid = function (model) {
         $http.get('/models/delete', { params: { uid: model.uid } }).then(function (response) {
-          model.nextMode = -1;
+          model.nextMode = response.data.mode;
+          console.log(model);
           vm.setVs(model);
         });
       };
 
-      vm.dump = function (model) {
-      	console.log(model);
+      vm.prev = function () {
+        var i = vm.models.indexOf(vm.model) - 1;
+
+        vm.model = (i >= 0) ? vm.models[i] : vm.models[vm.models.length - 1];
+      };
+
+      vm.next = function () {
+        var i = vm.models.indexOf(vm.model) + 1;
+
+        vm.model = (i < vm.models.length) ? vm.models[i] : vm.models[0];
+      };
+
+      vm.setSnapshot = function () {
+        if (!vm.model) {
+          vm.snapshot = null;
+        } else {
+          vm.snapshot = vm.model.snapshot + '?no-cache=' + Date.now();
+
+          $timeout(vm.setSnapshot, 500);
+        }
+      };
+
+      vm.viewModel = function (model) {
+        vm.model = model;
+
+        vm.setSnapshot();
       };
 
       vm.refresh = function () {
         vm.ready = false;
+        var camserv;
 
         $http
           .get('/models')
           .then(function (response) {
-            vm.models = response.data.map(function (m) {
+            vm.serverModels = response.data.map(function (m) {
+
               vm.setVs(m);
+
+              m.keywords = m.nm + '\n' + m.city + '\n' + m.country + (m.phase === 'a' ? '\nHD' : '');
 
               if (m.city && m.city.length > 20) {
                 m.city = m.city.substr(0, 19) + '…';
@@ -264,18 +499,20 @@
 
               m.rc = m.rc || 0;
 
+              m.snapshot = !vm.ngvideo_servers[m.camserv]
+                ? 'https://snap.mfcimg.com/snapimg/' + (m.camserv - 500) + '/320x240/mfc_' + (100000000 + m.uid)
+                : 'https://snap.mfcimg.com/snapimg/' + vm.ngvideo_servers[m.camserv] + '/320x240/mfc_a_' + (100000000 + m.uid);
+
               return m;
             });
 
-            $timeout(function () {
-              componentHandler.upgradeAllRegistered();
-              vm.ready = true;
-            });
+            vm.filterAndSort(true);
           });
       };
 
       vm.refresh();
     }]);
+
   </script>
 </body>
 </html>

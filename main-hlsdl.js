@@ -249,20 +249,11 @@ function createFfmpegCaptureProcess(model) {
         ? `http://video${model.camserv - 500}.myfreecams.com:1935/NxServer/ngrp:mfc_${roomId}.f4v_mobile/playlist.m3u8?nc=${Date.now()}`
         : `https://video${ngvideoServers[model.camserv]}.myfreecams.com:8444/x-hls/${mfcClient.stream_cxid}/${roomId}/${mfcClient.stream_password}/${mfcClient.stream_vidctx}/mfc_${model.phase}_${roomId}.m3u8`;
 
-      let captureProcess = childProcess.spawn('ffmpeg', [
-        '-hide_banner',
-        '-v',
-        'fatal',
-        '-i',
+      let captureProcess = childProcess.spawn('hlsdl', [
         hlsUrl,
-        '-c',
-        'copy',
-        '-vsync',
-        '2',
-        '-r',
-        '60',
-        '-b:v',
-        '500k',
+        '-b',
+        '-q',
+        '-o',
         path.join(captureDirectory, filename)
       ]);
 
@@ -271,11 +262,11 @@ function createFfmpegCaptureProcess(model) {
       }
 
       captureProcess.stdout.on('data', data => {
-        printMsg(data.toString());
+        // printMsg(data.toString());
       });
 
       captureProcess.stderr.on('data', data => {
-        printMsg(data.toString());
+        // printMsg(data.toString());
       });
 
       captureProcess.on('close', code => {

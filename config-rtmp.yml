@@ -4,7 +4,7 @@ modelScanInterval: 30
 createModelDirectory: true
 dateFormat: YYYYMMDD-HHmmss
 minFileSizeMb: 10
-port: 9080
+port: 9081
 debug: false
 models:
   - uid: 24877826
@@ -17,4 +17,4 @@ models:
     mode: 1
     nm: Chrisymay
 queue: []
-#proxyServer: '54.206.109.161:9090'
+rtmpDebug: false

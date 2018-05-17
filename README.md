@@ -1,3 +1,10 @@
+What's new?
+=========
+
+Added [hlsdl](https://github.com/samsamsam-iptvplayer/hlsdl) support in `main-hlsdl.js`.
+
+`hlsdl` can record HLS streams under Linux without significant drop of segments (in comparison with ffmpeg).
+
 mfc-node
 ==========
 
@@ -17,14 +24,14 @@ Want to support?
 
 Requirements
 ==========
-[Node.js](https://nodejs.org/download/) used to run mfc-node, hence the name.
+[Node.js](https://nodejs.org/download/) used to run mfc-node, hence the name (minimum node version requirement: v9.4).
 
 [ffmpeg](https://www.ffmpeg.org/download.html)
 
 Setup
 ===========
 
-1. Install [Node.js](https://nodejs.org/download/) (minimum node version requirement: v6).
+1. Install [Node.js](https://nodejs.org/download/) (minimum node version requirement: v9.4).
 2. Download and unpack the [code](https://github.com/sstativa/mfc-node/archive/master.zip).
 3. Open Terminal (macOS) or Command Prompt (Windows) and go into the directory where you unpacked the files.
 4. Install requirements by running `npm install` in the same directory as `main.js` is (Windows users have to install [Git](https://git-scm.com/download/win)).
@@ -47,6 +54,20 @@ Running
 > Note: There is no __auto reload__ feature, you have to reload the list manually (__big red button__), however, keep in mind the script updates the list internally every 30 seconds (`modelScanInterval`), therefore sometimes you'll have to wait 30 seconds to see any updates.
 
 > Note: Be mindful when capturing many streams at once to have plenty of space on disk and the bandwidth available or you’ll end up dropping a lot of frames and the files will be useless.
+
+RTMP
+===========
+
+To record RTMP streams you will require to have a "patched" version of `rtmpdump`.
+
+On March 23, MFC deployed a number of changes to support __OBS Studio__ and higher resolution (720p or 1080p) streams.
+These new streams was possible to record by using regular `rtmpdump`, but not its patched version.
+
+> Note: For now there is no way to record new streams using `rtmpdump` (MFC broke something). You can record only "old" streams if you have "patched" rtmpdump.
+
+hlsdl
+===========
+Surprisingly, a small utility [hlsdl](https://github.com/samsamsam-iptvplayer/hlsdl) for Linux can record HLS streams without significant drop of frames. Linux user should consider using `hlsdl` instead of `ffmpeg`.
 
 Converting
 ===========
@@ -79,3 +100,14 @@ http://localhost:9080/models/delete?nm=modelname
 http://localhost:9080/models/delete?uid=12345678
 ```
 
+Proxy
+===========
+
+This is just a Proof of Concept to avoid region block.
+To use it you have to start `proxy.js` on some remote server located in a different region then add a parameter `proxyServer` to your local `config.yml`, for example, `proxyServer: '54.206.109.161:9090'`.
+
+The `main.js` script will try to get models from the remote region then merge them with the list of models available in your region.
+
+> Note: This is not a real-time application, expect inconsistency.
+
+> Note: There might be an issue with new HD streams.

@@ -8,17 +8,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sstativa/mfc-node.git"
+    "url": "git://github.com/Damianonymous/mfc-node.git"
   },
-  "author": "sstativa",
+  "author": "Damianonymous",
   "license": "WTFPL",
   "bugs": {
-    "url": "https://github.com/sstativa/mfc-node/issues"
+    "url": "https://github.com/Damianonymous/mfc-node/issues"
   },
-  "homepage": "https://github.com/sstativa/mfc-node",
+  "homepage": "https://github.com/Damianonymous/mfc-node",
   "dependencies": {
     "JSONStream": "^1.3.1",
-    "MFCAuto": "github:ZombieAlex/MFCAuto",
+    "MFCLogger": "github:ZombieAlex/MFCLogger",
     "bhttp": "^1.2.4",
     "bluebird": "^2.9.25",
     "colors": "^1.1.2",

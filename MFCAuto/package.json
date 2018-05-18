@@ -1,0 +1,67 @@
+{
+  "_from": "github:ZombieAlex/MFCAuto",
+  "_id": "MFCAuto@5.2.2",
+  "_inBundle": false,
+  "_location": "/MFCAuto",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "MFCAuto@github:ZombieAlex/MFCAuto",
+    "name": "MFCAuto",
+    "escapedName": "MFCAuto",
+    "rawSpec": "github:ZombieAlex/MFCAuto",
+    "saveSpec": "github:ZombieAlex/MFCAuto",
+    "fetchSpec": null,
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "github:ZombieAlex/MFCAuto#f4f8dda6e01f00620bb7619a9f491268218774dc",
+  "_spec": "MFCAuto@github:ZombieAlex/MFCAuto",
+  "_where": "D:\\Videos\\SStativa\\mfc-node-master",
+  "author": {
+    "name": "ZombieAlex"
+  },
+  "bugs": {
+    "url": "https://github.com/ZombieAlex/MFCAuto/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "load": "^1.0.2",
+    "ws": "^5.1.1",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "deprecated": false,
+  "description": "A module for interacting with MyFreeCams chat servers.",
+  "devDependencies": {
+    "@types/node": "^9.6.5",
+    "@types/ws": "^4.0.2",
+    "chai": "^4.1.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.1.1",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.1"
+  },
+  "engines": {
+    "node": ">=9.4.0"
+  },
+  "homepage": "https://github.com/ZombieAlex/MFCAuto#readme",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "name": "MFCAuto",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZombieAlex/MFCAuto.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha src/test/test.js",
+    "lint": "tslint --project tsconfig.json",
+    "prebuild": "tslint --project tsconfig.json",
+    "test": "mocha src/test/test.js",
+    "testfast": "mocha src/test/test.js -g \"^(?!.*{slow})\""
+  },
+  "typings": "./lib/index.d.ts",
+  "version": "5.2.2"
+}
